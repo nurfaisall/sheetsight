@@ -6,7 +6,7 @@
 **SheetSight** — web app yang mengubah file Excel/CSV menjadi dashboard interaktif otomatis (KPI, grafik, tabel). Semua diproses di browser, tanpa backend. Spesifikasi lengkap di `PRD.md`.
 
 ## Tech Stack
-- React 18 + Vite
+- Next.js 14 (App Router) + React 18
 - Tailwind CSS
 - SheetJS (`xlsx`) — parsing Excel/CSV
 - Recharts — grafik
@@ -24,13 +24,11 @@
 ## Struktur Folder
 ```
 src/
+  app/          # layout.jsx, page.jsx, globals.css (App Router)
   components/   # Dropzone, KpiCard, ChartPanel, DataTable, Navbar...
   context/      # data hasil parse + filter state
   lib/          # parseSheet, detectColumns, suggestCharts, formatters
   hooks/
-  App.jsx
-  main.jsx
-  index.css
 ```
 
 ## Design Tokens (brand SheetSight)

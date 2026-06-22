@@ -83,7 +83,7 @@ Gunakan **SheetJS**: `XLSX.read(arrayBuffer)` → `XLSX.utils.sheet_to_json(shee
 ---
 
 ## 5. Tech Stack
-- **Framework:** React 18 + Vite
+- **Framework:** Next.js 14 (App Router) + React 18
 - **Styling:** Tailwind CSS
 - **Parsing:** SheetJS (`xlsx`)
 - **Grafik:** Recharts (atau Chart.js)
