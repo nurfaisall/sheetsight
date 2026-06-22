@@ -4,8 +4,11 @@
 
 SheetSight membaca file `.xlsx` / `.xls` / `.csv`, mendeteksi tipe tiap kolom (angka, tanggal, kategori), lalu otomatis membangun KPI, grafik, dan tabel interaktif. Tanpa rumus, tanpa bikin pivot/chart manual.
 
-![SheetSight](mockup-reference/SheetSight-mockup.html)
-> _Ganti baris di atas dengan screenshot `screenshot.png` setelah app live._
+<!-- Setelah deploy: simpan screenshot dashboard sebagai docs/screenshot.png,
+     lalu hapus komentar ini agar gambar di bawah tampil. -->
+<!-- ![SheetSight — dashboard otomatis dari file Excel/CSV](docs/screenshot.png) -->
+
+> 📸 _Screenshot menyusul setelah app live di Vercel._
 
 ---
 
@@ -34,6 +37,8 @@ SheetSight membaca file `.xlsx` / `.xls` / `.csv`, mendeteksi tipe tiap kolom (a
 ## 🚀 Cara Run
 
 ```bash
+git clone https://github.com/nurfaisall/sheetsight.git
+cd sheetsight
 npm install
 npm run dev      # http://localhost:3000
 ```
@@ -73,7 +78,8 @@ file kamu — cek tab **Network** untuk membuktikannya (NFR di PRD).
 Push ke GitHub → import di [Vercel](https://vercel.com) → deploy (preset Next.js,
 tanpa konfigurasi tambahan).
 
-**Live demo:** _(isi setelah deploy)_
+- **Live demo:** _(isi URL Vercel setelah deploy, mis. `https://sheetsight.vercel.app`)_
+- **Repo:** https://github.com/nurfaisall/sheetsight
 
 ---
 
