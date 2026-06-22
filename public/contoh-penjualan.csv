@@ -1,0 +1,21 @@
+ID Pesanan,Tanggal,Produk,Kategori,Wilayah,Qty,Total,Status
+INV-1042,2026-01-12,Sepatu Sneakers Putih,Sepatu,Jawa Barat,3,1377000,Lunas
+INV-1043,2026-01-18,Earbuds Wireless,Elektronik,DKI Jakarta,2,798000,Lunas
+INV-1044,2026-02-03,Hoodie Oversize,Pakaian,Jawa Tengah,1,249000,Pending
+INV-1045,2026-02-21,Tote Bag Kanvas,Pakaian,Banten,5,495000,Lunas
+INV-1046,2026-03-09,Keyboard Mekanikal,Elektronik,Jawa Timur,1,549000,Pending
+INV-1047,2026-03-15,Sepatu Lari Hitam,Sepatu,Jawa Barat,2,1198000,Lunas
+INV-1048,2026-03-28,Kaos Polos Premium,Pakaian,DKI Jakarta,8,632000,Lunas
+INV-1049,2026-04-04,Mouse Gaming,Elektronik,Bali,3,897000,Lunas
+INV-1050,2026-04-19,Jaket Bomber,Pakaian,Jawa Barat,1,389000,Pending
+INV-1051,2026-04-25,Sandal Gunung,Sepatu,Sumatera Utara,4,476000,Lunas
+INV-1052,2026-05-02,Powerbank 20000mAh,Elektronik,DKI Jakarta,2,558000,Lunas
+INV-1053,2026-05-14,Celana Chino,Pakaian,Jawa Tengah,3,747000,Lunas
+INV-1054,2026-05-22,Smartwatch Sport,Elektronik,Bali,1,1249000,Pending
+INV-1055,2026-06-01,Sepatu Formal Kulit,Sepatu,Jawa Barat,2,1598000,Lunas
+INV-1056,2026-06-08,Topi Baseball,Pakaian,Banten,6,354000,Lunas
+INV-1057,2026-06-11,Headphone Over-ear,Elektronik,Jawa Timur,1,899000,Lunas
+INV-1058,2026-06-17,Sepatu Boots,Sepatu,DKI Jakarta,1,789000,Pending
+INV-1059,2026-06-20,Sweater Rajut,Pakaian,Jawa Barat,4,956000,Lunas
+INV-1060,2026-06-21,Charger Fast 65W,Elektronik,Bali,3,447000,Lunas
+INV-1061,2026-06-22,Slip-on Canvas,Sepatu,Sumatera Utara,2,398000,Lunas

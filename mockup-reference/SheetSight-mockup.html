@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SheetSight — Excel jadi Dashboard, otomatis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0A0E1A; --surface:#151B2B; --surface2:#1F2740; --accent:#8B8CFB; --accent2:#4F46E5;
+  --text:#EAEDF8; --muted:#9AA3BC; --border:rgba(234,237,248,.11); --shadow:rgba(0,0,0,.5);
+  --green:#22C55E; --amber:#F59E0B; --red:#EF4444; --cyan:#06B6D4;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:"Source Sans Pro",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+h1,h2,h3,h4{margin:0;line-height:1.12;letter-spacing:-.02em;font-weight:700;}
+p{margin:0;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+.mono{font-family:"JetBrains Mono",monospace;}
+.container{width:100%;max-width:1180px;margin:0 auto;padding:0 24px;}
+.accent{color:var(--accent);}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;height:64px;display:flex;align-items:center;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;width:100%;}
+.logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:18px;}
+.logo .mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;display:grid;place-items:center;}
+.logo .mark svg{width:21px;height:21px;}
+.nav-links{display:flex;gap:6px;align-items:center;}
+.nav-links a{padding:8px 14px;border-radius:9px;font-size:15px;font-weight:500;color:var(--muted);transition:.2s;}
+.nav-links a:hover{color:var(--text);}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:0 22px;height:46px;border-radius:11px;font-size:15px;font-weight:600;transition:transform .18s,box-shadow .22s,background .2s;}
+.btn svg{width:18px;height:18px;}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;box-shadow:0 10px 24px -12px var(--accent2);}
+.btn-primary:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 16px 30px -12px var(--accent2);}
+.btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);border-color:var(--accent);}
+@media(max-width:760px){.nav-links{display:none;}}
+
+/* hero */
+.hero{position:relative;padding:88px 0 60px;overflow:hidden;}
+.hero-glow{position:absolute;width:680px;height:680px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 20%,transparent),transparent 68%);top:-260px;right:-160px;pointer-events:none;}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr 1fr;gap:54px;align-items:center;}
+@media(max-width:920px){.hero-grid{grid-template-columns:1fr;gap:40px;}}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);font-size:13px;font-weight:600;color:var(--accent);font-family:"JetBrains Mono";}
+.badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 30%,transparent);}
+.hero h1{font-size:clamp(34px,5.2vw,56px);margin:20px 0 0;}
+.hero h1 .grad{background:linear-gradient(120deg,var(--accent),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{color:var(--muted);font-size:19px;margin-top:20px;max-width:520px;}
+.hero-cta{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;}
+.hero-flow{display:flex;align-items:center;gap:12px;margin-top:30px;flex-wrap:wrap;color:var(--muted);font-size:14px;font-weight:600;}
+.hero-flow .step{display:inline-flex;align-items:center;gap:8px;}
+.hero-flow .step svg{width:17px;height:17px;color:var(--accent);}
+.hero-flow .arr{opacity:.4;}
+
+/* upload card mock */
+.upload-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:0 36px 80px -36px var(--shadow);}
+.upload-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.upload-head .ttl{font-size:13px;font-weight:600;color:var(--muted);font-family:"JetBrains Mono";letter-spacing:.08em;text-transform:uppercase;}
+.dots{display:flex;gap:6px;}
+.dots i{width:11px;height:11px;border-radius:50%;display:block;}
+.dropzone{border:2px dashed color-mix(in srgb,var(--accent) 40%,var(--border));border-radius:15px;background:color-mix(in srgb,var(--accent) 5%,var(--surface2));padding:38px 22px;text-align:center;transition:.25s;}
+.dropzone:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface2));}
+.dropzone .ic{width:62px;height:62px;border-radius:16px;margin:0 auto 16px;background:linear-gradient(135deg,var(--accent2),var(--accent));display:grid;place-items:center;}
+.dropzone .ic svg{width:30px;height:30px;color:#fff;}
+.dropzone h3{font-size:19px;}
+.dropzone p{color:var(--muted);font-size:14px;margin-top:6px;}
+.dz-btn{margin-top:18px;}
+.file-row{display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;}
+.file-row .xls{width:36px;height:36px;border-radius:9px;background:color-mix(in srgb,var(--green) 18%,var(--surface));color:var(--green);display:grid;place-items:center;flex-shrink:0;}
+.file-row .xls svg{width:19px;height:19px;}
+.file-meta{flex:1;}
+.file-meta .n{font-weight:600;font-size:14.5px;}
+.file-meta .s{color:var(--muted);font-size:12.5px;font-family:"JetBrains Mono";}
+.file-row .ok{color:var(--green);}
+
+/* generic section */
+.section{padding:84px 0;}
+.eyebrow{font-family:"JetBrains Mono";font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:10px;}
+.eyebrow::before{content:"";width:26px;height:2px;background:var(--accent);}
+.s-title{font-size:clamp(28px,3.6vw,40px);margin:16px 0 0;}
+.s-sub{color:var(--muted);font-size:18px;margin-top:14px;max-width:560px;}
+.center{text-align:center;}
+.center .eyebrow{justify-content:center;}
+.center .s-sub{margin-inline:auto;}
+
+/* features */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px;}
+@media(max-width:860px){.feat-grid{grid-template-columns:1fr;}}
+.feat{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;transition:transform .28s,box-shadow .28s,border-color .2s;}
+.feat:hover{transform:translateY(-5px);box-shadow:0 24px 48px -26px var(--shadow);border-color:color-mix(in srgb,var(--accent) 40%,transparent);}
+.feat .ic{width:48px;height:48px;border-radius:13px;background:color-mix(in srgb,var(--accent) 14%,var(--surface));color:var(--accent);display:grid;place-items:center;margin-bottom:18px;}
+.feat .ic svg{width:24px;height:24px;}
+.feat h3{font-size:19px;}
+.feat p{color:var(--muted);font-size:14.5px;margin-top:9px;}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px;}
+@media(max-width:860px){.steps{grid-template-columns:1fr;}}
+.step-c{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;overflow:hidden;}
+.step-c .num{position:absolute;top:12px;right:18px;font-size:46px;font-weight:800;color:color-mix(in srgb,var(--accent) 18%,transparent);}
+.step-c h3{font-size:18px;margin-top:6px;}
+.step-c p{color:var(--muted);font-size:14px;margin-top:8px;}
+
+/* ===== DEMO DASHBOARD ===== */
+.demo-wrap{margin-top:50px;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 90px -40px var(--shadow);}
+.demo-bar{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.demo-bar .dots i{width:12px;height:12px;}
+.demo-bar .url{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-family:"JetBrains Mono";font-size:12.5px;color:var(--muted);}
+.demo-body{padding:26px;}
+.demo-top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px;}
+.demo-file{display:flex;align-items:center;gap:11px;}
+.demo-file .xls{width:40px;height:40px;border-radius:10px;background:color-mix(in srgb,var(--green) 18%,var(--surface));color:var(--green);display:grid;place-items:center;}
+.demo-file .xls svg{width:21px;height:21px;}
+.demo-file .n{font-weight:700;font-size:16px;}
+.demo-file .s{color:var(--muted);font-size:12.5px;font-family:"JetBrains Mono";}
+.seg{display:flex;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:11px;padding:4px;}
+.seg button{padding:8px 16px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--muted);}
+.seg button.on{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr);}}
+.kpi{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px;}
+.kpi .lbl{font-size:12px;color:var(--muted);font-family:"JetBrains Mono";letter-spacing:.06em;text-transform:uppercase;}
+.kpi .val{font-size:26px;font-weight:800;margin-top:8px;letter-spacing:-.02em;}
+.kpi .chg{font-size:12.5px;font-weight:600;margin-top:5px;display:inline-flex;align-items:center;gap:4px;}
+.kpi .chg.up{color:var(--green);} .kpi .chg.down{color:var(--red);}
+
+.charts{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:18px;}
+@media(max-width:760px){.charts{grid-template-columns:1fr;}}
+.panel{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px;}
+.panel h4{font-size:14.5px;margin-bottom:4px;}
+.panel .ph-sub{font-size:12px;color:var(--muted);margin-bottom:16px;font-family:"JetBrains Mono";}
+
+/* bar chart (CSS) */
+.bars{display:flex;align-items:flex-end;gap:14px;height:180px;padding-top:10px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end;}
+.bar{width:100%;max-width:42px;border-radius:7px 7px 0 0;background:linear-gradient(180deg,var(--accent),var(--accent2));position:relative;transition:height .8s cubic-bezier(.22,.61,.36,1);}
+.bar-col .bl{font-size:11.5px;color:var(--muted);font-family:"JetBrains Mono";}
+.bar .bv{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);font-family:"JetBrains Mono";white-space:nowrap;}
+
+/* donut (conic) */
+.donut-wrap{display:flex;align-items:center;gap:20px;}
+.donut{width:130px;height:130px;border-radius:50%;flex-shrink:0;background:conic-gradient(var(--accent2) 0 38%,var(--accent) 38% 64%,var(--cyan) 64% 82%,var(--green) 82% 100%);position:relative;}
+.donut::after{content:"";position:absolute;inset:26px;border-radius:50%;background:var(--bg);}
+.legend{display:flex;flex-direction:column;gap:9px;font-size:13px;}
+.legend .li{display:flex;align-items:center;gap:8px;color:var(--muted);}
+.legend .sw{width:11px;height:11px;border-radius:3px;}
+
+/* table */
+.tbl-panel{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:6px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;padding:13px 14px;font-family:"JetBrains Mono";font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);font-weight:600;}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--border);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--surface);}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:600;font-family:"JetBrains Mono";}
+.pill.green{background:color-mix(in srgb,var(--green) 16%,transparent);color:var(--green);}
+.pill.amber{background:color-mix(in srgb,var(--amber) 16%,transparent);color:var(--amber);}
+.num{font-family:"JetBrains Mono";}
+
+/* CTA */
+.cta{margin:0 0 84px;}
+.cta-box{background:linear-gradient(135deg,color-mix(in srgb,var(--accent2) 22%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:22px;padding:54px 40px;text-align:center;}
+.cta-box h2{font-size:clamp(26px,3.4vw,38px);}
+.cta-box p{color:var(--muted);font-size:18px;margin:14px auto 0;max-width:480px;}
+.cta-box .hero-cta{justify-content:center;}
+
+/* footer */
+.foot{border-top:1px solid var(--border);padding:26px 0;}
+.foot-in{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:14px;}
+.foot-in .note{font-size:12.5px;}
+
+.tag{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:99;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:9px 18px;font-size:12.5px;color:var(--muted);box-shadow:0 14px 36px -16px var(--shadow);}
+.tag b{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <div class="logo">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
+      SheetSight
+    </div>
+    <nav class="nav-links">
+      <a href="#fitur">Fitur</a>
+      <a href="#cara">Cara Kerja</a>
+      <a href="#demo">Demo</a>
+    </nav>
+    <a href="#demo" class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Coba Gratis</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="container hero-grid">
+    <div>
+      <span class="badge"><span class="dot"></span>100% jalan di browser · tanpa upload ke server</span>
+      <h1>File Excel jadi <span class="grad">dashboard</span>, dalam hitungan detik.</h1>
+      <p class="hero-sub">Seret file <b>.xlsx</b> atau <b>.csv</b> — SheetSight otomatis membaca datanya dan membuat KPI, grafik, dan tabel interaktif. Tanpa rumus, tanpa bikin chart manual.</p>
+      <div class="hero-cta">
+        <a href="#demo" class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Upload File Saya</a>
+        <a href="#demo" class="btn btn-ghost">Lihat Contoh Hasil</a>
+      </div>
+      <div class="hero-flow">
+        <span class="step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Upload</span>
+        <span class="arr">→</span>
+        <span class="step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>Otomatis dibaca</span>
+        <span class="arr">→</span>
+        <span class="step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>Dashboard jadi</span>
+      </div>
+    </div>
+
+    <!-- upload mock -->
+    <div class="upload-card">
+      <div class="upload-head">
+        <span class="ttl">SheetSight · Upload</span>
+        <span class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></span>
+      </div>
+      <div class="dropzone">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></div>
+        <h3>Seret file ke sini</h3>
+        <p>atau klik untuk pilih — .xlsx, .xls, .csv (maks. 10 MB)</p>
+        <button class="btn btn-primary dz-btn" onclick="document.getElementById('demo').scrollIntoView()">Pilih File</button>
+      </div>
+      <div class="file-row">
+        <span class="xls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M4 6V4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg></span>
+        <div class="file-meta"><div class="n">penjualan-juni.xlsx</div><div class="s">240 baris · 9 kolom · 86 KB</div></div>
+        <span class="ok"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR -->
+<section class="section" id="fitur">
+  <div class="container">
+    <span class="eyebrow">Kenapa SheetSight</span>
+    <h2 class="s-title">Hemat jam kerja tiap minggu</h2>
+    <div class="feat-grid">
+      <div class="feat">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 2v4a5 5 0 0 1-10 0V2"/><path d="M7 22v-4a5 5 0 0 1 10 0v4"/></svg></span>
+        <h3>Instan, bukan jam-jaman</h3>
+        <p>Tak perlu bikin pivot & chart manual tiap bulan. Upload sekali, dashboard langsung jadi.</p>
+      </div>
+      <div class="feat">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M3 9h18"/></svg></span>
+        <h3>Deteksi kolom otomatis</h3>
+        <p>Tahu mana angka, tanggal, dan kategori — lalu menyarankan grafik yang paling pas.</p>
+      </div>
+      <div class="feat">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-9.33-5"/><path d="m10.67 21.33 1.33-1.33"/><circle cx="12" cy="12" r="3"/></svg></span>
+        <h3>Aman & privat</h3>
+        <p>Semua diproses di browser kamu. File tidak pernah diunggah ke server mana pun.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARA -->
+<section class="section" id="cara" style="background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--accent) 4%,var(--bg)));">
+  <div class="container">
+    <span class="eyebrow">Cara Kerja</span>
+    <h2 class="s-title">Tiga langkah, selesai</h2>
+    <div class="steps">
+      <div class="step-c"><span class="num">01</span><h3>Upload</h3><p>Seret file Excel atau CSV ke halaman. Tidak perlu daftar.</p></div>
+      <div class="step-c"><span class="num">02</span><h3>SheetSight membaca</h3><p>Data dipindai, kolom dikenali, grafik terbaik disarankan otomatis.</p></div>
+      <div class="step-c"><span class="num">03</span><h3>Lihat & bagikan</h3><p>Dapat dashboard interaktif. Filter, ganti grafik, ekspor PDF, atau bagikan link.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO DASHBOARD -->
+<section class="section" id="demo">
+  <div class="container">
+    <div class="center">
+      <span class="eyebrow">Contoh Hasil</span>
+      <h2 class="s-title">Beginilah dashboard otomatisnya</h2>
+      <p class="s-sub">Dari file <span class="mono">penjualan-juni.xlsx</span> di atas — semua angka & grafik dibuat otomatis.</p>
+    </div>
+
+    <div class="demo-wrap">
+      <div class="demo-bar">
+        <span class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></span>
+        <span class="url">sheetsight.app/d/penjualan-juni</span>
+      </div>
+      <div class="demo-body">
+        <div class="demo-top">
+          <div class="demo-file">
+            <span class="xls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M4 6V4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg></span>
+            <div><div class="n">penjualan-juni.xlsx</div><div class="s">240 baris · diperbarui otomatis</div></div>
+          </div>
+          <div class="seg">
+            <button class="on">Ringkasan</button>
+            <button>Tabel</button>
+            <button>Bagikan</button>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi"><div class="lbl">Total Penjualan</div><div class="val">Rp 228,2 jt</div><div class="chg up">▲ 12,4% vs Mei</div></div>
+          <div class="kpi"><div class="lbl">Jumlah Order</div><div class="val">240</div><div class="chg up">▲ 8 order</div></div>
+          <div class="kpi"><div class="lbl">Rata-rata Order</div><div class="val">Rp 951 rb</div><div class="chg down">▼ 2,1%</div></div>
+          <div class="kpi"><div class="lbl">Produk Terjual</div><div class="val">812</div><div class="chg up">▲ 5,6%</div></div>
+        </div>
+
+        <div class="charts">
+          <div class="panel">
+            <h4>Penjualan per Bulan</h4>
+            <div class="ph-sub">otomatis dari kolom "Tanggal" + "Total"</div>
+            <div class="bars">
+              <div class="bar-col"><div class="bar" style="height:52%"><span class="bv">31jt</span></div><span class="bl">Jan</span></div>
+              <div class="bar-col"><div class="bar" style="height:44%"><span class="bv">27jt</span></div><span class="bl">Feb</span></div>
+              <div class="bar-col"><div class="bar" style="height:62%"><span class="bv">38jt</span></div><span class="bl">Mar</span></div>
+              <div class="bar-col"><div class="bar" style="height:71%"><span class="bv">43jt</span></div><span class="bl">Apr</span></div>
+              <div class="bar-col"><div class="bar" style="height:58%"><span class="bv">35jt</span></div><span class="bl">Mei</span></div>
+              <div class="bar-col"><div class="bar" style="height:88%"><span class="bv">54jt</span></div><span class="bl">Jun</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h4>Per Kategori</h4>
+            <div class="ph-sub">kolom "Kategori"</div>
+            <div class="donut-wrap">
+              <div class="donut"></div>
+              <div class="legend">
+                <span class="li"><span class="sw" style="background:var(--accent2)"></span>Pakaian · 38%</span>
+                <span class="li"><span class="sw" style="background:var(--accent)"></span>Elektronik · 26%</span>
+                <span class="li"><span class="sw" style="background:var(--cyan)"></span>Sepatu · 18%</span>
+                <span class="li"><span class="sw" style="background:var(--green)"></span>Lainnya · 18%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tbl-panel">
+          <table>
+            <thead><tr><th>ID Pesanan</th><th>Produk</th><th>Wilayah</th><th>Qty</th><th>Total</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="num">INV-1042</td><td>Sepatu Sneakers Putih</td><td>Jawa Barat</td><td class="num">3</td><td class="num">Rp 1.377.000</td><td><span class="pill green">Lunas</span></td></tr>
+              <tr><td class="num">INV-1043</td><td>Earbuds Wireless</td><td>DKI Jakarta</td><td class="num">2</td><td class="num">Rp 798.000</td><td><span class="pill green">Lunas</span></td></tr>
+              <tr><td class="num">INV-1044</td><td>Hoodie Oversize</td><td>Jawa Tengah</td><td class="num">1</td><td class="num">Rp 249.000</td><td><span class="pill amber">Pending</span></td></tr>
+              <tr><td class="num">INV-1045</td><td>Tote Bag Kanvas</td><td>Banten</td><td class="num">5</td><td class="num">Rp 495.000</td><td><span class="pill green">Lunas</span></td></tr>
+              <tr><td class="num">INV-1046</td><td>Keyboard Mekanikal</td><td>Jawa Timur</td><td class="num">1</td><td class="num">Rp 549.000</td><td><span class="pill amber">Pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Punya file Excel yang berantakan?</h2>
+      <p>Ubah jadi dashboard rapi dalam hitungan detik. Gratis, tanpa daftar.</p>
+      <div class="hero-cta">
+        <a href="#demo" class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Mulai Sekarang</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="container foot-in">
+    <div class="logo" style="font-size:16px"><span class="mark" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>SheetSight</div>
+    <span class="note">Konsep produk · dirancang oleh Nur Faizal Khusayiri Saldan</span>
+  </div>
+</footer>
+
+<div class="tag">📐 Mockup desain — <b>SheetSight</b> · belum berfungsi, hanya tampilan</div>
+
+</body>
+</html>
